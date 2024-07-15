@@ -6,16 +6,19 @@ const cors = require("cors");
 app.use(express.json());
 app.use(cors());
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files from the 'frontend/dist' directory
+app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
 
 app.get("/api/hello", async (req, res) => {
+    console.log("Received request at /api/hello");
     res.send({ ok: true, msg: "hello" });
 });
 
 // Serve index.html for any other routes
 app.get("/*", async (req, res) => {
-    res.sendFile(path.join(__dirname, '/frontend/dist/index.html'));
+    const indexPath = path.join(__dirname, 'frontend', 'dist', 'index.html');
+    console.log(`Serving index.html from ${indexPath}`);
+    res.sendFile(indexPath);
 });
 
 // Error handling middleware
