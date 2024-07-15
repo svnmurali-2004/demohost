@@ -1,9 +1,30 @@
-const express=require("express")
-const app=express()
-app.use(express.json())
+const express = require("express");
+const path = require("path");
+const app = express();
+const cors = require("cors");
 
-app.get("/api/hello",async(req,res)=>{
-    res.send({ok:true,msg:"hello"})
-})
+app.use(express.json());
+app.use(cors());
 
-app.listen(5000,()=>{console.log("running at port 5000")})
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get("/api/hello", async (req, res) => {
+    res.send({ ok: true, msg: "hello" });
+});
+
+// Serve index.html for any other routes
+app.get("/*", async (req, res) => {
+    res.sendFile(path.join(__dirname, '/frontend/dist/index.html'));
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server running at port ${PORT}`);
+});
